@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "id": "USR001",
+      "name": "Admin User",
+      "email": "admin@auditflow.com",
+      "password": "Admin@123",
+      "role": "admin"
+    },
+    {
+      "id": "USR002",
+      "name": "Audit Manager",
+      "email": "manager@auditflow.com",
+      "password": "Manager@123",
+      "role": "can-edit"
+    },
+    {
+      "name": "Galidinne Venkata Sireesha",
+      "email": "siri@gmail.com",
+      "password": "siri@2004",
+      "role": "can-log-sensor-data",
+      "id": "S0n86r0VKlQ"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

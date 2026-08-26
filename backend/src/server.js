@@ -21,9 +21,11 @@ app.use((req, res, next) => {
 // Import and mount routers (CQRS)
 const queryRouter = require('./routes/queries');
 const commandRouter = require('./routes/commands');
+const auditRouter = require('./routes/audit');
 
 app.use('/api/shipments', queryRouter);
 app.use('/api/shipments', commandRouter);
+app.use('/api/events', auditRouter);
 
 // Basic Health Check
 app.get('/health', (req, res) => {
