@@ -20,6 +20,13 @@
       "password": "siri@2004",
       "role": "can-log-sensor-data",
       "id": "S0n86r0VKlQ"
+    },
+    {
+      "name": "Deepali Luthra",
+      "email": "luthradeepali94@gmail.com",
+      "password": "39LE-.MNtZvRjGW",
+      "role": "read-only",
+      "id": "D374y4JHUa8"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
