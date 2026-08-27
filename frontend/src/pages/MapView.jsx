@@ -1,3 +1,4 @@
+import { MapPinned } from "lucide-react";
 import { useState } from "react";
 import "leaflet/dist/leaflet.css";
 import ShipmentMap from "../components/Map/ShipmentMap";
@@ -45,25 +46,54 @@ export default function MapView() {
   const [selectedShipment, setSelectedShipment] = useState(null);
 
   return (
-    <div className="map-page">
+    <div className="page-container">
       <div className="page-header">
-        <div>
-          <h1>Shipment Map</h1>
-          <p>Track container routes and current locations in real time.</p>
+        <div className="page-header-left">
+          <h1>Map View</h1>
+          <p>Track shipment routes and current locations in real time.</p>
         </div>
 
-        <div className="map-live-status">
-          <span className="live-dot" />
-          Live Tracking
-        </div>
+        <span className="live-status">LIVE TRACKING</span>
       </div>
 
-      <div className="map-card">
-        <ShipmentMap
-          shipments={demoShipments}
-          selectedShipment={selectedShipment}
-          onShipmentSelect={setSelectedShipment}
-        />
+      <div className="map-layout">
+        <div className="map-container">
+          <ShipmentMap
+            shipments={demoShipments}
+            selectedShipment={selectedShipment}
+            onShipmentSelect={setSelectedShipment}
+          />
+        </div>
+
+        <aside className="route-panel">
+          <div className="route-panel-header">
+            <h2>Active Routes</h2>
+            <span>{demoShipments.length} shipments available</span>
+          </div>
+
+          <div className="route-list">
+            {demoShipments.map((shipment) => (
+              <button
+                className="route-item"
+                key={shipment.id}
+                type="button"
+                onClick={() => setSelectedShipment(shipment)}
+              >
+                <div className="route-id">
+                  <strong>{shipment.containerId}</strong>
+                  <span className="status-badge status-transit">
+                    {shipment.status}
+                  </span>
+                </div>
+
+                <div className="route-location">
+                  <MapPinned size={14} />
+                  {shipment.location}
+                </div>
+              </button>
+            ))}
+          </div>
+        </aside>
       </div>
 
       {selectedShipment && (

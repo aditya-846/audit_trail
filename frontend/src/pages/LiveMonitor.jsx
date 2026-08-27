@@ -8,6 +8,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { useSocket } from "../context/SocketContext";
+import "../styles/live-monitor.css";
 
 export default function LiveMonitor() {
   const { connected, lastEvent } = useSocket();

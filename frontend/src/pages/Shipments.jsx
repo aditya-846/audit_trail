@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Plus } from "lucide-react";
 
+import "../styles/shipments.css";
 import api from "../services/api";
 import shipmentService from "../services/shipmentService";
 import { useAuth } from "../context/AuthContext";

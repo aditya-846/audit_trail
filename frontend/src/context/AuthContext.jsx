@@ -49,6 +49,8 @@ export function AuthProvider({ children }) {
     }
 
     const data = await authService.login(email, password);
+    localStorage.setItem("audit_token", data.token);
+    localStorage.setItem("audit_user", JSON.stringify(data.user));
     setToken(data.token);
     setUser(data.user);
     return data.user;

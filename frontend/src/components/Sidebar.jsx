@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
+import "./Sidebar.css";
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
