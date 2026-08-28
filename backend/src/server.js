@@ -27,9 +27,15 @@ app.use('/api/shipments', queryRouter);
 app.use('/api/shipments', commandRouter);
 app.use('/api/events', auditRouter);
 
-// Basic Health Check
+// Enhanced Health Check
 app.get('/health', (req, res) => {
-  res.json({ status: 'UP', timestamp: new Date() });
+  res.json({ 
+    status: 'UP', 
+    timestamp: new Date(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    message: 'Health check enhanced by your AI assistant!'
+  });
 });
 
 // 404 Route
