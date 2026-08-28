@@ -33,6 +33,7 @@ app.get('/health', (req, res) => {
     status: 'UP', 
     timestamp: new Date(),
     uptime: process.uptime(),
+    memoryUsage: process.memoryUsage(),
     environment: process.env.NODE_ENV || 'development',
     message: 'Health check enhanced by your AI assistant!'
   });
