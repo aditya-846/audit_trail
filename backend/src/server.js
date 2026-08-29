@@ -12,9 +12,13 @@ const app = express();
 app.use(cors()); // Allow all origins (standard for public/Replit testing)
 app.use(express.json());
 
-// Logger middleware
+// Logger middleware with response time
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} ${res.statusCode} - ${duration}ms`);
+  });
   next();
 });
 
