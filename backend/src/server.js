@@ -31,6 +31,11 @@ app.use('/api/shipments', queryRouter);
 app.use('/api/shipments', commandRouter);
 app.use('/api/events', auditRouter);
 
+// Root Route
+app.get('/', (req, res) => {
+  res.send('Audit Trail API is running');
+});
+
 // Enhanced Health Check
 app.get('/health', (req, res) => {
   res.json({ 
