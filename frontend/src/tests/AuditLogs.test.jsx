@@ -40,12 +40,16 @@ describe("Audit Logs Page", () => {
     );
   });
 
-  it("renders audit logs page", () => {
+  it("renders audit logs page", async () => {
     render(<AuditLogs />, { wrapper: Wrapper });
 
     expect(
       screen.getByRole("heading", { name: /audit logs/i })
     ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+    });
   });
 
   it("displays audit logs from API", async () => {

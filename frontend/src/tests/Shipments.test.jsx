@@ -40,12 +40,16 @@ describe("Shipments Page", () => {
     );
   });
 
-  it("renders shipments page", () => {
+  it("renders shipments page", async () => {
     render(<Shipments />, { wrapper: Wrapper });
 
     expect(
       screen.getByText(/shipments/i)
     ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+    });
   });
 
   it("loads shipment data", async () => {
