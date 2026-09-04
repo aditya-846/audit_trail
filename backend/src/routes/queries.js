@@ -39,6 +39,26 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/shipments/stats
+router.get('/stats', async (req, res) => {
+  try {
+    const total = await ShipmentReadModel.countDocuments({});
+    const inTransit = await ShipmentReadModel.countDocuments({ currentStatus: 'IN_TRANSIT' });
+    const delivered = await ShipmentReadModel.countDocuments({ currentStatus: 'DELIVERED' });
+    const delayed = await ShipmentReadModel.countDocuments({ currentStatus: 'DELAYED' });
+
+    return res.json({
+      total,
+      inTransit,
+      delivered,
+      delayed
+    });
+  } catch (error) {
+    console.error('Error fetching dashboard stats:', error.message);
+    return res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
+  }
+});
+
 // GET /api/shipments/:id
 router.get('/:id', async (req, res) => {
   const { id } = req.params;

@@ -11,10 +11,10 @@ describe("Dashboard Page", () => {
         ok: true,
         json: () =>
           Promise.resolve({
-            shipments: 25,
-            auditLogs: 120,
-            sensors: 24,
-            activeRoutes: 18,
+            total: 999,
+            inTransit: 888,
+            delivered: 777,
+            delayed: 666
           }),
       })
     );
@@ -32,7 +32,9 @@ describe("Dashboard Page", () => {
     render(<Dashboard />);
 
     await waitFor(() => {
-      expect(screen.getByText(/25/i)).toBeInTheDocument();
+      // The total stat should be rendered based on our fetch mock
+      expect(screen.getByText(/999/i)).toBeInTheDocument();
+      expect(screen.getByText(/888/i)).toBeInTheDocument();
     });
   });
 
