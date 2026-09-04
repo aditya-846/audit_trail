@@ -11,7 +11,7 @@ const initialForm = {
   email: "",
   password: "",
   confirmPassword: "",
-  role: "read-only",
+  role: "AUDITOR",
 };
 
 export default function Register() {
@@ -103,7 +103,7 @@ export default function Register() {
             <form onSubmit={handleSubmit} className="register-form">
               <RegisterInput label="Full Name" name="name" type="text" placeholder="Enter your full name" icon={<User size={18} />} value={formData.name} onChange={handleChange} autoComplete="name" />
               <RegisterInput label="Email Address" name="email" type="email" placeholder="you@example.com" icon={<Mail size={18} />} value={formData.email} onChange={handleChange} autoComplete="email" />
-              <div className="register-form-group"><label htmlFor="role">Access Role</label><div className="register-select"><ShieldCheck size={18} className="register-input-icon" /><select id="role" name="role" value={formData.role} onChange={handleChange}><option value="read-only">Read Only</option><option value="can-edit">Can Edit</option><option value="can-log-sensor-data">Can Log Sensor Data</option></select></div><small className="role-description">Select the level of access required for your work.</small></div>
+              <div className="register-form-group"><label htmlFor="role">Access Role</label><div className="register-select"><ShieldCheck size={18} className="register-input-icon" /><select id="role" name="role" value={formData.role} onChange={handleChange}><option value="AUDITOR">Auditor (Read-Only)</option><option value="DISPATCHER">Dispatcher (Can Move Shipments)</option><option value="TELEMETRY_BOT">Telemetry Bot (Can Log Sensors)</option></select></div><small className="role-description">Select the level of access required for your work.</small></div>
               <PasswordInput label="Password" name="password" placeholder="Minimum 8 characters" value={formData.password} show={showPassword} onChange={handleChange} onToggle={() => setShowPassword(!showPassword)} />
               <PasswordInput label="Confirm Password" name="confirmPassword" placeholder="Re-enter your password" value={formData.confirmPassword} show={showConfirmPassword} onChange={handleChange} onToggle={() => setShowConfirmPassword(!showConfirmPassword)} />
               <label className="register-terms"><input type="checkbox" checked={agreeTerms} onChange={(event) => setAgreeTerms(event.target.checked)} /><span>I agree to the AuditFlow security policy and terms of service.</span></label>

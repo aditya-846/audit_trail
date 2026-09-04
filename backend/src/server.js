@@ -22,11 +22,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Import and mount routers (CQRS)
+// Import and mount routers (CQRS & Auth)
 const queryRouter = require('./routes/queries');
 const commandRouter = require('./routes/commands');
 const auditRouter = require('./routes/audit');
+const authRouter = require('./routes/auth');
 
+app.use('/api/auth', authRouter);
 app.use('/api/shipments', queryRouter);
 app.use('/api/shipments', commandRouter);
 app.use('/api/events', auditRouter);

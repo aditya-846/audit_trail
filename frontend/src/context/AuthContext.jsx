@@ -69,10 +69,10 @@ export function AuthProvider({ children }) {
     return Array.isArray(role) ? role.includes(user.role) : user.role === role;
   };
   const canRead = () =>
-    ["admin", "read-only", "can-edit", "can-log-sensor-data"].includes(user?.role);
-  const canEdit = () => ["admin", "can-edit"].includes(user?.role);
+    ["AUDITOR", "DISPATCHER", "TELEMETRY_BOT", "admin", "read-only", "can-edit", "can-log-sensor-data"].includes(user?.role);
+  const canEdit = () => ["DISPATCHER", "admin", "can-edit"].includes(user?.role);
   const canLogSensorData = () =>
-    ["admin", "can-log-sensor-data"].includes(user?.role);
+    ["TELEMETRY_BOT", "DISPATCHER", "admin", "can-log-sensor-data"].includes(user?.role);
 
   return (
     <AuthContext.Provider

@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { handleCommand } = require('../services/commandHandlers');
 const { updateProjection } = require('../services/projectionWorker');
+const { authenticateToken, requireRole } = require('../middleware/auth');
 
-// POST /api/shipments/:id/commands
-router.post('/:id/commands', async (req, res) => {
+// POST /api/shipments/:id/commands (requires DISPATCHER or TELEMETRY_BOT)
+router.post('/:id/commands', authenticateToken, requireRole('DISPATCHER', 'TELEMETRY_BOT'), async (req, res) => {
   const { id } = req.params;
   const { type, payload, expectedVersion } = req.body;
 
