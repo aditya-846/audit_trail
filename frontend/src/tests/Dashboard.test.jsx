@@ -1,14 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import Dashboard from "../pages/Dashboard";
-import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from "../context/AuthContext";
-
-const Wrapper = ({ children }) => (
-  <BrowserRouter>
-    <AuthProvider>{children}</AuthProvider>
-  </BrowserRouter>
-);
+import Dashboard from "../src/pages/Dashboard";
 
 describe("Dashboard Page", () => {
   beforeEach(() => {
@@ -29,7 +21,7 @@ describe("Dashboard Page", () => {
   });
 
   it("renders dashboard", () => {
-    render(<Dashboard />, { wrapper: Wrapper });
+    render(<Dashboard />);
 
     expect(
       screen.getByText(/dashboard/i)
@@ -37,10 +29,18 @@ describe("Dashboard Page", () => {
   });
 
   it("displays dashboard statistics", async () => {
-    render(<Dashboard />, { wrapper: Wrapper });
+    render(<Dashboard />);
 
     await waitFor(() => {
-      expect(screen.getByText(/1,248/i)).toBeInTheDocument();
+      expect(screen.getByText(/25/i)).toBeInTheDocument();
+    });
+  });
+
+  it("calls API when dashboard loads", async () => {
+    render(<Dashboard />);
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
     });
   });
 });

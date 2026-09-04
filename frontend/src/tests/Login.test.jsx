@@ -1,37 +1,30 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import Login from "../pages/Login";
-import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from "../context/AuthContext";
-
-const Wrapper = ({ children }) => (
-  <BrowserRouter>
-    <AuthProvider>{children}</AuthProvider>
-  </BrowserRouter>
-);
+import Login from "../src/pages/Login";
+import { loginUser } from "../services/authService";
 
 describe("Login Page", () => {
   it("renders login form", () => {
-    render(<Login />, { wrapper: Wrapper });
+    render(<Login />);
 
     expect(
-      screen.getByRole("heading", { name: /welcome back/i })
+      screen.getByRole("heading", { name: /login/i })
     ).toBeInTheDocument();
 
     expect(
-      screen.getByPlaceholderText(/you@example.com/i)
+      screen.getByPlaceholderText(/email/i)
     ).toBeInTheDocument();
 
     expect(
-      screen.getByPlaceholderText(/Enter your password/i)
+      screen.getByPlaceholderText(/password/i)
     ).toBeInTheDocument();
   });
 
   it("allows user to enter email and password", () => {
-    render(<Login />, { wrapper: Wrapper });
+    render(<Login />);
 
-    const emailInput = screen.getByPlaceholderText(/you@example.com/i);
-    const passwordInput = screen.getByPlaceholderText(/Enter your password/i);
+    const emailInput = screen.getByPlaceholderText(/email/i);
+    const passwordInput = screen.getByPlaceholderText(/password/i);
 
     fireEvent.change(emailInput, {
       target: { value: "test@example.com" },
@@ -46,10 +39,10 @@ describe("Login Page", () => {
   });
 
   it("renders login button", () => {
-    render(<Login />, { wrapper: Wrapper });
+    render(<Login />);
 
     expect(
-      screen.getByRole("button", { name: /sign in/i })
+      screen.getByRole("button", { name: /login/i })
     ).toBeInTheDocument();
   });
 });

@@ -83,7 +83,6 @@ async function runTests() {
     const twoAndHalfDaysAgo = new Date(baseDate.getTime() - 2.5 * 24 * 60 * 60 * 1000).toISOString();
     
     const timeTravelRes = await makeRequest(`${BASE_URL}/api/shipments/SHIP-001?asOf=${twoAndHalfDaysAgo}`);
-    console.log("timeTravelRes.data", timeTravelRes.data);
     assert(timeTravelRes.status === 200, 'GET /api/shipments/SHIP-001?asOf=... returns status 200');
     assert(timeTravelRes.data.version === 3, 'Time travel query correctly scrubbed state to version 3');
     assert(timeTravelRes.data.currentStatus === 'IN_TRANSIT', 'State status at version 3 was IN_TRANSIT');
