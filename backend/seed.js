@@ -3,12 +3,35 @@ const mongoose = require('mongoose');
 const connectDB = require('./src/config/db');
 const Event = require('./src/models/EventStore');
 const ShipmentReadModel = require('./src/models/ShipmentReadModel');
-const { updateProjection } = require('./src/services/projectionWorker');
+const bcrypt = require('bcryptjs');
+const User = require('./src/models/User');
+
+const legacyUsers = [
+  { email: "admin@auditflow.com", password: "Admin@123", role: "DISPATCHER" },
+  { email: "manager@auditflow.com", password: "Manager@123", role: "DISPATCHER" },
+  { email: "siri@gmail.com", password: "siri@2004", role: "TELEMETRY_BOT" },
+  { email: "luthradeepali94@gmail.com", password: "39LE-.MNtZvRjGW", role: "AUDITOR" }
+];
 
 const seedData = async () => {
   try {
     // Connect to database
     await connectDB();
+
+    console.log('Seeding past user accounts...');
+    for (const u of legacyUsers) {
+      const existing = await User.findOne({ email: u.email.toLowerCase() });
+      if (!existing) {
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(u.password, salt);
+        await User.create({
+          email: u.email.toLowerCase(),
+          passwordHash,
+          role: u.role
+        });
+        console.log(`Seeded user: ${u.email}`);
+      }
+    }
 
     console.log('Clearing database event_store and shipments_read_model collections...');
     
