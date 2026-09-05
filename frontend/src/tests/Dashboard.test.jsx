@@ -1,6 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import Dashboard from "../src/pages/Dashboard";
+import Dashboard from "../pages/Dashboard";
+
+vi.mock("react-router-dom", () => ({
+  useNavigate: () => vi.fn(),
+}));
+
+vi.mock("../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { name: "Test User", role: "DISPATCHER" },
+  }),
+}));
 
 describe("Dashboard Page", () => {
   beforeEach(() => {

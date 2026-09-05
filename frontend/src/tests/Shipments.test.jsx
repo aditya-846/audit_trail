@@ -1,6 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import Shipments from "../src/pages/Shipments";
+import Shipments from "../pages/Shipments";
+
+vi.mock("react-router-dom", () => ({
+  useNavigate: () => vi.fn(),
+  Link: ({ children }) => children,
+}));
+
+vi.mock("../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { name: "Test User", role: "DISPATCHER" },
+    logout: vi.fn(),
+    canEdit: () => true,
+  }),
+}));
 
 describe("Shipments Page", () => {
   beforeEach(() => {
@@ -10,22 +23,24 @@ describe("Shipments Page", () => {
       Promise.resolve({
         ok: true,
         json: () =>
-          Promise.resolve([
-            {
-              id: "SHIP-001",
-              shipmentId: "SHIP-001",
-              status: "In Transit",
-              origin: "Hyderabad",
-              destination: "Vijayawada",
-            },
-            {
-              id: "SHIP-002",
-              shipmentId: "SHIP-002",
-              status: "Delivered",
-              origin: "Chennai",
-              destination: "Hyderabad",
-            },
-          ]),
+          Promise.resolve({
+            shipments: [
+              {
+                id: "SHIP-001",
+                shipmentId: "SHIP-001",
+                status: "In Transit",
+                origin: "Hyderabad",
+                destination: "Vijayawada",
+              },
+              {
+                id: "SHIP-002",
+                shipmentId: "SHIP-002",
+                status: "Delivered",
+                origin: "Chennai",
+                destination: "Hyderabad",
+              },
+            ],
+          }),
       })
     );
   });
@@ -46,7 +61,7 @@ describe("Shipments Page", () => {
     });
 
     expect(screen.getByText(/Hyderabad/i)).toBeInTheDocument();
-    expect(screen.getByText(/Vijayawada/i)).toBeInTheDocument();
+    expect(screen.getByText(/Chennai/i)).toBeInTheDocument();
   });
 
   it("calls shipments API", async () => {

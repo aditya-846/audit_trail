@@ -5,6 +5,7 @@ const Event = require('./src/models/EventStore');
 const ShipmentReadModel = require('./src/models/ShipmentReadModel');
 const bcrypt = require('bcryptjs');
 const User = require('./src/models/User');
+const { updateProjection } = require('./src/services/projectionWorker');
 
 const legacyUsers = [
   { email: "admin@auditflow.com", password: "Admin@123", role: "DISPATCHER" },

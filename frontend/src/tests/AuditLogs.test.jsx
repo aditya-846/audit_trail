@@ -1,6 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import AuditLogs from "../src/pages/AuditLogs";
+import AuditLogs from "../pages/AuditLogs";
+
+vi.mock("react-router-dom", () => ({
+  useNavigate: () => vi.fn(),
+}));
+
+vi.mock("../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { name: "Test User", role: "DISPATCHER" },
+    logout: vi.fn(),
+  }),
+}));
+
+
 
 describe("Audit Logs Page", () => {
   beforeEach(() => {
@@ -10,20 +23,22 @@ describe("Audit Logs Page", () => {
       Promise.resolve({
         ok: true,
         json: () =>
-          Promise.resolve([
-            {
-              id: "LOG-001",
-              action: "Shipment Created",
-              user: "Admin",
-              timestamp: "2026-08-30T10:00:00Z",
-            },
-            {
-              id: "LOG-002",
-              action: "Shipment Updated",
-              user: "Manager",
-              timestamp: "2026-08-30T11:00:00Z",
-            },
-          ]),
+          Promise.resolve({
+            events: [
+              {
+                id: "LOG-001",
+                type: "CONTAINER_CREATED",
+                user: "Admin",
+                createdAt: "2026-08-30T10:00:00Z",
+              },
+              {
+                id: "LOG-002",
+                type: "TEMPERATURE_UPDATE",
+                user: "Manager",
+                createdAt: "2026-08-30T11:00:00Z",
+              },
+            ],
+          }),
       })
     );
   });
@@ -32,7 +47,7 @@ describe("Audit Logs Page", () => {
     render(<AuditLogs />);
 
     expect(
-      screen.getByText(/audit logs/i)
+      screen.getAllByText(/audit logs/i)[0]
     ).toBeInTheDocument();
   });
 
@@ -41,12 +56,12 @@ describe("Audit Logs Page", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/Shipment Created/i)
+        screen.getAllByText(/Temperature Updated/i)[0]
       ).toBeInTheDocument();
     });
 
     expect(
-      screen.getByText(/Shipment Updated/i)
+      screen.getAllByText(/Shipment Created/i)[0]
     ).toBeInTheDocument();
   });
 

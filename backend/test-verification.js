@@ -98,13 +98,20 @@ async function runTests() {
     assert(eventsRes.data.events[0].eventType === 'CONTAINER_CREATED', 'First event type is CONTAINER_CREATED');
     assert(eventsRes.data.events[5].eventType === 'ARRIVED_AT_PORT', 'Last event type is ARRIVED_AT_PORT');
 
+    const jwt = require('jsonwebtoken');
+    const { JWT_SECRET } = require('./src/middleware/auth');
+    const testToken = jwt.sign({ id: 'test-user', role: 'DISPATCHER', email: 'test@auditflow.com' }, JWT_SECRET);
+
     // -------------------------------------------------------------
     // Test 5: Command with OCC Mismatch (Expect 409 Conflict)
     // Send command with expectedVersion = 5, when the current version is 6
     // -------------------------------------------------------------
     const conflictRes = await makeRequest(`${BASE_URL}/api/shipments/SHIP-001/commands`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${testToken}`
+      },
       body: JSON.stringify({
         type: 'TEMPERATURE_UPDATE',
         payload: { temperature: 5.5 },
@@ -121,7 +128,10 @@ async function runTests() {
     // -------------------------------------------------------------
     const successRes = await makeRequest(`${BASE_URL}/api/shipments/SHIP-001/commands`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${testToken}`
+      },
       body: JSON.stringify({
         type: 'TEMPERATURE_UPDATE',
         payload: { temperature: 5.5 },
