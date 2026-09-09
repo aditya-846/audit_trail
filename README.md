@@ -1,6 +1,6 @@
 # Audit Trail — Event-Sourced Inventory & Logistics Ledger
 
-> **Note:** This project is actively being developed and maintained.
+> **Note:** This project is actively being developed and maintained. (Last updated: September 2026)
 
 **Audit Trail** is a full-stack MERN application demonstrating an **Event Sourcing** and **CQRS (Command Query Responsibility Segregation)** architecture for supply chain logistics. 
 
