@@ -55,15 +55,16 @@ function normalizeShipment(shipment) {
 
 export default function useShipments() {
   const [shipments, setShipments] = useState([]);
+  const [pagination, setPagination] = useState({ totalPages: 1, totalItems: 0, currentPage: 1 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadShipments = useCallback(async () => {
+  const loadShipments = useCallback(async (params = {}) => {
     setLoading(true);
     setError("");
 
     try {
-      const response = await shipmentService.getShipments();
+      const response = await shipmentService.getShipments(params);
 
       const loadedShipments = response.shipments || [];
 
@@ -73,6 +74,14 @@ export default function useShipments() {
           : demoShipments
         ).map(normalizeShipment)
       );
+      
+      if (response.pagination) {
+        setPagination({
+          totalPages: response.pagination.totalPages,
+          totalItems: response.pagination.total,
+          currentPage: response.pagination.page
+        });
+      }
     } catch (err) {
       console.error("Failed to load shipments:", err);
 
@@ -85,12 +94,11 @@ export default function useShipments() {
     }
   }, []);
 
-  useEffect(() => {
-    loadShipments();
-  }, [loadShipments]);
+  // Removed useEffect, component will control it
 
   return {
     shipments,
+    pagination,
     loading,
     error,
     loadShipments,

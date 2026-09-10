@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 
 import "../styles/shipments.css";
@@ -13,7 +13,6 @@ import ShipmentModal from "../components/Shipments/ShipmentModal";
 import Pagination from "../components/Shipments/Pagination";
 
 import useShipments from "../hooks/useShipments";
-import usePagination from "../hooks/usePagination";
 
 const initialFilters = {
   search: "",
@@ -27,12 +26,14 @@ export default function Shipments() {
   // Shipment hook
   const {
     shipments,
+    pagination,
     loading,
     error,
     loadShipments,
   } = useShipments();
 
   const [filters, setFilters] = useState(initialFilters);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedShipment, setSelectedShipment] =
@@ -41,80 +42,16 @@ export default function Shipments() {
   const [saving, setSaving] = useState(false);
 
   // --------------------------------
-  // FILTER + SORT
+  // LOAD DATA
   // --------------------------------
-
-  const filteredShipments = useMemo(() => {
-    let result = [...shipments];
-
-    const search = filters.search.toLowerCase();
-
-    // Search
-    if (search) {
-      result = result.filter((shipment) =>
-        [
-          shipment.containerId,
-          shipment.shipmentId,
-          shipment.name,
-          shipment.descriptiveName,
-          shipment.originPort,
-          shipment.origin,
-          shipment.status,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase()
-          .includes(search)
-      );
-    }
-
-    // Status filter
-    if (filters.status !== "all") {
-      result = result.filter(
-        (shipment) =>
-          shipment.status === filters.status
-      );
-    }
-
-    // Sorting
-    result.sort((first, second) => {
-      if (filters.sortBy === "createdAt") {
-        return (
-          new Date(
-            second.createdAt ||
-              second.lastUpdated ||
-              0
-          ) -
-          new Date(
-            first.createdAt ||
-              first.lastUpdated ||
-              0
-          )
-        );
-      }
-
-      return String(
-        first[filters.sortBy] || ""
-      ).localeCompare(
-        String(second[filters.sortBy] || "")
-      );
+  
+  useEffect(() => {
+    loadShipments({
+      ...filters,
+      page: currentPage,
+      limit: 8
     });
-
-    return result;
-  }, [shipments, filters]);
-
-  // --------------------------------
-  // PAGINATION
-  // --------------------------------
-
-  const {
-    currentPage,
-    totalPages,
-    totalItems,
-    paginatedData,
-    goToPage,
-    resetPage,
-  } = usePagination(filteredShipments, 8);
+  }, [filters, currentPage, loadShipments]);
 
   // --------------------------------
   // SAVE SHIPMENT
@@ -165,7 +102,11 @@ export default function Shipments() {
         );
       }
 
-      await loadShipments();
+      await loadShipments({
+        ...filters,
+        page: currentPage,
+        limit: 8
+      });
 
       setModalOpen(false);
       setSelectedShipment(null);
@@ -186,7 +127,7 @@ export default function Shipments() {
 
   const resetFilters = () => {
     setFilters(initialFilters);
-    resetPage();
+    setCurrentPage(1);
   };
 
   // --------------------------------
@@ -249,14 +190,14 @@ export default function Shipments() {
         filters={filters}
         onChange={(value) => {
           setFilters(value);
-          resetPage();
+          setCurrentPage(1);
         }}
         onReset={resetFilters}
       />
 
       {/* TABLE */}
       <ShipmentTable
-        shipments={paginatedData}
+        shipments={shipments}
         onView={(shipment) => {
           setSelectedShipment(shipment);
           setModalOpen(true);
@@ -270,11 +211,11 @@ export default function Shipments() {
 
       {/* PAGINATION */}
       <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalItems={totalItems}
+        currentPage={pagination?.currentPage || 1}
+        totalPages={pagination?.totalPages || 1}
+        totalItems={pagination?.totalItems || 0}
         pageSize={8}
-        onPageChange={goToPage}
+        onPageChange={(page) => setCurrentPage(page)}
       />
 
       {/* MODAL */}

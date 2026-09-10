@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 
 // Connect to MongoDB
@@ -22,13 +24,32 @@ app.use((req, res, next) => {
   next();
 });
 
+// Rate Limiters
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'TOO_MANY_REQUESTS', message: 'Too many requests, please try again later.' }
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // Limit each IP to 20 auth requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'TOO_MANY_REQUESTS', message: 'Too many authentication attempts, please try again later.' }
+});
+
+app.use('/api', globalLimiter);
+
 // Import and mount routers (CQRS & Auth)
 const queryRouter = require('./routes/queries');
 const commandRouter = require('./routes/commands');
 const auditRouter = require('./routes/audit');
 const authRouter = require('./routes/auth');
 
-app.use('/api/auth', authRouter);
+app.use('/api/auth', authLimiter, authRouter);
 app.use('/api/shipments', queryRouter);
 app.use('/api/shipments', commandRouter);
 app.use('/api/events', auditRouter);
@@ -65,6 +86,21 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
 });
+
+// Graceful Shutdown
+const gracefulShutdown = () => {
+  console.log('Received kill signal, shutting down gracefully.');
+  server.close(() => {
+    console.log('HTTP server closed.');
+    mongoose.connection.close(false).then(() => {
+      console.log('MongoDB connection closed.');
+      process.exit(0);
+    });
+  });
+};
+
+process.on('SIGINT', gracefulShutdown);
+process.on('SIGTERM', gracefulShutdown);

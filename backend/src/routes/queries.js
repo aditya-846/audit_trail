@@ -4,10 +4,10 @@ const Event = require('../models/EventStore');
 const ShipmentReadModel = require('../models/ShipmentReadModel');
 const { reconstructState } = require('../services/replayEngine');
 
-// GET /api/shipments?search=<query>
+// GET /api/shipments?search=<query>&page=<num>&limit=<num>
 router.get('/', async (req, res) => {
   try {
-    const { search } = req.query;
+    const { search, page = 1, limit = 8, status, sortBy = 'createdAt' } = req.query;
     let filter = {};
 
     if (search) {
@@ -22,7 +22,32 @@ router.get('/', async (req, res) => {
       };
     }
 
-    const shipments = await ShipmentReadModel.find(filter).sort({ lastUpdated: -1 });
+    if (status && status !== 'all') {
+      const reverseStatusMap = {
+        "Active": ["CREATED", "PENDING"],
+        "In Transit": ["IN_TRANSIT", "LOADED_ON_SHIP"],
+        "Delivered": ["ARRIVED_AT_PORT"]
+      };
+      const mappedStatuses = reverseStatusMap[status];
+      if (mappedStatuses) {
+        filter.currentStatus = { $in: mappedStatuses };
+      }
+    }
+
+    let sortObj = { lastUpdated: -1 };
+    if (sortBy === 'containerId') sortObj = { id: 1 };
+    else if (sortBy === 'status') sortObj = { currentStatus: 1 };
+    else if (sortBy === 'origin') sortObj = { location: 1 };
+
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const total = await ShipmentReadModel.countDocuments(filter);
+    const shipments = await ShipmentReadModel.find(filter)
+      .sort(sortObj)
+      .skip(skip)
+      .limit(limitNumber);
     
     // Map list to frontend's expected contract format
     const formattedShipments = shipments.map(s => ({
@@ -32,7 +57,15 @@ router.get('/', async (req, res) => {
       lastUpdated: s.lastUpdated
     }));
 
-    return res.json({ shipments: formattedShipments });
+    return res.json({ 
+      shipments: formattedShipments,
+      pagination: {
+        total,
+        page: pageNumber,
+        limit: limitNumber,
+        totalPages: Math.ceil(total / limitNumber)
+      }
+    });
   } catch (error) {
     console.error('Error fetching shipments list:', error.message);
     return res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
