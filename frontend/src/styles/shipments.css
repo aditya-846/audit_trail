@@ -46,9 +46,11 @@
 }
 
 .shipments-page .primary-button:hover {
-	border-color: #7dd3fc;
-	background: #7dd3fc;
-	transform: translateY(-1px);
+	border-color: #6366f1;
+	background: #6366f1;
+	color: #ffffff;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
 }
 
 .shipments-page .primary-button:focus-visible,
@@ -189,8 +191,21 @@
 	border-bottom: 0;
 }
 
+.shipment-table tbody tr {
+	animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	opacity: 0;
+}
+.shipment-table tbody tr:nth-child(1) { animation-delay: 0.05s; }
+.shipment-table tbody tr:nth-child(2) { animation-delay: 0.1s; }
+.shipment-table tbody tr:nth-child(3) { animation-delay: 0.15s; }
+.shipment-table tbody tr:nth-child(4) { animation-delay: 0.2s; }
+.shipment-table tbody tr:nth-child(5) { animation-delay: 0.25s; }
+.shipment-table tbody tr:nth-child(6) { animation-delay: 0.3s; }
+.shipment-table tbody tr:nth-child(7) { animation-delay: 0.35s; }
+.shipment-table tbody tr:nth-child(8) { animation-delay: 0.4s; }
+
 .shipment-table tbody tr:hover {
-	background: rgba(14, 116, 144, 0.1);
+	background: rgba(99, 102, 241, 0.12);
 }
 
 .shipment-id {
@@ -239,13 +254,15 @@
 }
 
 .table-action:hover {
-	border-color: #38bdf8;
-	color: #7dd3fc;
+	border-color: #6366f1;
+	color: #818cf8;
+	transform: scale(1.05);
 }
 
 .table-action.edit:hover {
 	border-color: #fbbf24;
-	color: #fbbf24;
+	color: #fcd34d;
+	transform: scale(1.05);
 }
 
 .shipment-empty {
