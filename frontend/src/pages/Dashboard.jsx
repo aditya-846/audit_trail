@@ -30,9 +30,9 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="dashboard-page">
+    <div className="dashboard-page animate-fade-in-scale">
 
-      <div className="page-header">
+      <div className="page-header animate-fade-in-up stagger-1">
         <div>
           <h1>Dashboard</h1>
 
@@ -45,45 +45,53 @@ export default function Dashboard() {
 
       <div className="dashboard-stats-grid">
 
-        <StatCard
-          title="Total Shipments"
-          value={stats.total}
-          change="+12.5%"
-          description="Compared to last month"
-          icon="package"
-          type="blue"
-        />
+        <div className="animate-fade-in-up stagger-1">
+          <StatCard
+            title="Total Shipments"
+            value={stats.total}
+            change="+12.5%"
+            description="Compared to last month"
+            icon="package"
+            type="blue"
+          />
+        </div>
 
-        <StatCard
-          title="In Transit"
-          value={stats.inTransit}
-          change="+8.2%"
-          description="Currently moving"
-          icon="truck"
-          type="purple"
-        />
+        <div className="animate-fade-in-up stagger-2">
+          <StatCard
+            title="In Transit"
+            value={stats.inTransit}
+            change="+8.2%"
+            description="Currently moving"
+            icon="truck"
+            type="purple"
+          />
+        </div>
 
-        <StatCard
-          title="Delivered"
-          value={stats.delivered}
-          change="+15.4%"
-          description="Successfully delivered"
-          icon="check"
-          type="green"
-        />
+        <div className="animate-fade-in-up stagger-3">
+          <StatCard
+            title="Delivered"
+            value={stats.delivered}
+            change="+15.4%"
+            description="Successfully delivered"
+            icon="check"
+            type="green"
+          />
+        </div>
 
-        <StatCard
-          title="Delayed"
-          value={stats.delayed}
-          change="-4.8%"
-          description="Requires attention"
-          icon="alert"
-          type="orange"
-        />
+        <div className="animate-fade-in-up stagger-4">
+          <StatCard
+            title="Delayed"
+            value={stats.delayed}
+            change="-4.8%"
+            description="Requires attention"
+            icon="alert"
+            type="orange"
+          />
+        </div>
 
       </div>
 
-      <div className="dashboard-charts">
+      <div className="dashboard-charts animate-fade-in-up stagger-5">
 
         <ShipmentChart />
 
@@ -91,7 +99,9 @@ export default function Dashboard() {
 
       </div>
 
-      <RecentActivity />
+      <div className="animate-fade-in-up stagger-5">
+        <RecentActivity />
+      </div>
 
     </div>
   );

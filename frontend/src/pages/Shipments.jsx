@@ -158,10 +158,10 @@ export default function Shipments() {
   // --------------------------------
 
   return (
-    <div className="shipments-page">
+    <div className="shipments-page animate-fade-in-scale">
 
       {/* HEADER */}
-      <div className="page-header">
+      <div className="page-header animate-fade-in-up stagger-1">
         <div>
           <h1>Containers Ledger</h1>
 
@@ -186,37 +186,43 @@ export default function Shipments() {
       </div>
 
       {/* FILTERS */}
-      <ShipmentFilters
-        filters={filters}
-        onChange={(value) => {
-          setFilters(value);
-          setCurrentPage(1);
-        }}
-        onReset={resetFilters}
-      />
+      <div className="animate-fade-in-up stagger-2">
+        <ShipmentFilters
+          filters={filters}
+          onChange={(value) => {
+            setFilters(value);
+            setCurrentPage(1);
+          }}
+          onReset={resetFilters}
+        />
+      </div>
 
       {/* TABLE */}
-      <ShipmentTable
-        shipments={shipments}
-        onView={(shipment) => {
-          setSelectedShipment(shipment);
-          setModalOpen(true);
-        }}
-        onEdit={(shipment) => {
-          setSelectedShipment(shipment);
-          setModalOpen(true);
-        }}
-        canEdit={canEdit()}
-      />
+      <div className="animate-fade-in-up stagger-3">
+        <ShipmentTable
+          shipments={shipments}
+          onView={(shipment) => {
+            setSelectedShipment(shipment);
+            setModalOpen(true);
+          }}
+          onEdit={(shipment) => {
+            setSelectedShipment(shipment);
+            setModalOpen(true);
+          }}
+          canEdit={canEdit()}
+        />
+      </div>
 
       {/* PAGINATION */}
-      <Pagination
-        currentPage={pagination?.currentPage || 1}
-        totalPages={pagination?.totalPages || 1}
-        totalItems={pagination?.totalItems || 0}
-        pageSize={8}
-        onPageChange={(page) => setCurrentPage(page)}
-      />
+      <div className="animate-fade-in-up stagger-4">
+        <Pagination
+          currentPage={pagination?.currentPage || 1}
+          totalPages={pagination?.totalPages || 1}
+          totalItems={pagination?.totalItems || 0}
+          pageSize={8}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
+      </div>
 
       {/* MODAL */}
       <ShipmentModal
