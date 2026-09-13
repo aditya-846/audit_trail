@@ -41,6 +41,15 @@ function reducer(state, event) {
         temperature: payload.temperature !== undefined ? payload.temperature : state.temperature
       };
 
+    case 'UPDATE_SHIPMENT':
+      return {
+        ...updatedState,
+        name: payload.name !== undefined ? payload.name : state.name,
+        location: payload.origin !== undefined ? payload.origin : state.location,
+        temperature: payload.temperature !== undefined ? payload.temperature : state.temperature,
+        currentStatus: payload.status !== undefined ? payload.status : state.currentStatus
+      };
+
     case 'ARRIVED_AT_PORT':
       return {
         ...updatedState,

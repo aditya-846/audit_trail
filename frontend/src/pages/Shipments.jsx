@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import "../styles/shipments.css";
 import api from "../services/api";
@@ -22,6 +23,7 @@ const initialFilters = {
 
 export default function Shipments() {
   const { canEdit } = useAuth();
+  const navigate = useNavigate();
 
   // Shipment hook
   const {
@@ -79,9 +81,11 @@ export default function Shipments() {
         await api.post(
           `/shipments/${shipmentId}/commands`,
           {
-            type: "MOVE",
+            type: "UPDATE_SHIPMENT",
             payload: {
-              newLocation: formData.originPort,
+              name: formData.descriptiveName,
+              origin: formData.originPort,
+              temperature: formData.initTemp,
               status,
             },
             expectedVersion: detail.version,
@@ -202,8 +206,7 @@ export default function Shipments() {
         <ShipmentTable
           shipments={shipments}
           onView={(shipment) => {
-            setSelectedShipment(shipment);
-            setModalOpen(true);
+            navigate(`/shipments/${shipment.id || shipment.containerId}`);
           }}
           onEdit={(shipment) => {
             setSelectedShipment(shipment);
