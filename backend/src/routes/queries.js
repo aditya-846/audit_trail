@@ -11,7 +11,13 @@ router.get('/', async (req, res) => {
     let filter = {};
 
     if (search) {
-      filter.$text = { $search: search };
+      const regex = new RegExp(search, 'i');
+      filter.$or = [
+        { id: regex },
+        { name: regex },
+        { currentStatus: regex },
+        { location: regex }
+      ];
     }
 
     if (status && status !== 'all') {

@@ -4,12 +4,7 @@ import ShipmentChart from "../components/Dashboard/ShipmentChart";
 import ActivityChart from "../components/Dashboard/ActivityChart";
 import RecentActivity from "../components/Dashboard/RecentActivity";
 
-import {
-  Package,
-  Truck,
-  CheckCircle,
-  AlertTriangle,
-} from "lucide-react";
+import api from "../services/api";
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -20,11 +15,11 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    fetch('/api/shipments/stats')
-      .then(res => res.json())
+    api.get('/shipments/stats')
       .then(data => {
-        if (data.error) throw new Error(data.message);
-        setStats(data);
+        if (data) {
+          setStats(data);
+        }
       })
       .catch(err => console.error("Failed to fetch stats:", err));
   }, []);
